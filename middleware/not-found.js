@@ -1,3 +1,9 @@
-const notFound = (req, res) => res.status(404).send('Route does not exist')
+import { StatusCodes } from "http-status-codes";
+import { Result } from "../utils/Result.js";
 
-module.exports = notFound
+const notFoundMiddleware = (req, res) =>
+  res
+    .status(StatusCodes.NOT_FOUND)
+    .json(Result.failure("Route does not exist"));
+
+export { notFoundMiddleware };

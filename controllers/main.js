@@ -19,10 +19,24 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw createCustomError("Invalid token", 401);
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decoded) {
+    throw createCustomError("Invalid token", 401);
+  }
+
   const luckyNumber = Math.floor(Math.random() * 100);
 
   res.status(StatusCodes.OK).json({
-    msg: `Hello, John Doe!`,
+    msg: `Hello, ${decoded.username}`,
     secret: `Your lucky number is ${luckyNumber}`,
   });
 };
